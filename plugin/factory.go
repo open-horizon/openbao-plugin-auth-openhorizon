@@ -3,7 +3,7 @@ package plugin
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/vault/sdk/logical"
+	"github.com/openbao/openbao/sdk/logical"
 	"os"
 )
 

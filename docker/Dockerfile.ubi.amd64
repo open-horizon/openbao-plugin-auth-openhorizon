@@ -1,22 +1,22 @@
 FROM registry.access.redhat.com/ubi9-minimal:latest
 
 LABEL vendor="IBM"
-LABEL summary="The secrets vault."
-LABEL description="The vault manages secrets used by applications deployed to edge nodes."
+LABEL summary="The secrets bao."
+LABEL description="Bao manages secrets used by applications deployed to edge nodes."
 
 # add license file
 RUN mkdir -p /licenses
 COPY LICENSE.txt /licenses
 
-# This is the release of Vault to pull in and the key to verify the download.
-ARG VAULT_VERSION
-ARG VAULT_GPGKEY
+# This is the release of OpenBao to pull in and the key to verify the download.
+ARG BAO_VERSION
+ARG BAO_GPGKEY
 ARG ARCH
-ARG VAULT_PLUGIN_HASH
+ARG BAO_PLUGIN_HASH
 
-# Create a vault user and group first so the IDs get set the same way.
+# Create a bao user and group first so the IDs get set the same way.
 
-# Set up certificates, our base tools, and Vault.
+# Set up certificates, our base tools, and Bao.
 RUN set -eux; \
     microdnf update -y; \
     microdnf install -y ca-certificates shadow-utils gnupg openssl libcap wget tzdata unzip gzip tar && \
@@ -26,58 +26,61 @@ RUN set -eux; \
         hkp://keyserver.ubuntu.com:80 \
         hkp://pgp.mit.edu:80 \
     ; do \
-        echo "Fetching GPG key $VAULT_GPGKEY from $server"; \
-        gpg --batch --keyserver "$server" --recv-keys "$VAULT_GPGKEY" && found=yes && break; \
+        echo "Fetching GPG key $BAO_GPGKEY from $server"; \
+        gpg --batch --keyserver "$server" --recv-keys "$BAO_GPGKEY" && found=yes && break; \
     done; \
-    test -z "$found" && echo >&2 "error: failed to fetch GPG key $VAULT_GPGKEY" && exit 1; \
+    test -z "$found" && echo >&2 "error: failed to fetch GPG key $BAO_GPGKEY" && exit 1; \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
     wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
     chmod +x /usr/local/bin/dumb-init && \
-    wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${ARCH}.zip && \
-    wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_SHA256SUMS && \
-    wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_SHA256SUMS.sig && \
-    gpg --batch --verify vault_${VAULT_VERSION}_SHA256SUMS.sig vault_${VAULT_VERSION}_SHA256SUMS && \
-    grep vault_${VAULT_VERSION}_linux_${ARCH}.zip vault_${VAULT_VERSION}_SHA256SUMS | sha256sum -c && \
-    unzip -d /bin vault_${VAULT_VERSION}_linux_${ARCH}.zip && \
+    wget https://github.com/openbao/openbao/releases/download/${BAO_VERSION}/openbao_${BAO_VERSION}_linux_${ARCH}.zip.zip && \
+    # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_linux_${ARCH}.zip && \
+    # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS && \
+    # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS.sig && \
+    # gpg --batch --verify bao_${BAO_VERSION}_SHA256SUMS.sig bao_${BAO_VERSION}_SHA256SUMS && \
+    # grep bao_${BAO_VERSION}_linux_${ARCH}.zip bao_${BAO_VERSION}_SHA256SUMS | sha256sum -c && \
+    # unzip -d /bin bao_${BAO_VERSION}_linux_${ARCH}.zip && \
+    unzip -d /openbao_${BAO_VERSION}_linux_${ARCH}.zip openbao_${BAO_VERSION}_linux_${ARCH}.zip.zip && \
+    unzip -d /bin openbao_${BAO_VERSION}_linux_${ARCH}.zip && \
     cd /tmp && \
     rm -rf /tmp/build && \
-    gpgconf --kill dirmngr && \
-    gpgconf --kill gpg-agent  && \
-    rm -rf /root/.gnupg  && \
+    # gpgconf --kill dirmngr && \
+    # gpgconf --kill gpg-agent  && \
+    # rm -rf /root/.gnupg  && \
     microdnf clean all
 
-# /vault/logs is made available to use as a location to store audit logs
-# /vault/file is made available to use as a location with the file storage backend
-# the server will be started with /vault/config as the configuration directory so you can add additional config files in that location.
-RUN useradd -r -u 1000 -g root vault \
-        && mkdir /home/vault \
-        && chown -R vault:root /home/vault
+# /bao/logs is made available to use as a location to store audit logs
+# /bao/file is made available to use as a location with the file storage backend
+# the server will be started with /bao/config as the configuration directory so you can add additional config files in that location.
+RUN useradd -r -u 1000 -g root bao \
+        && mkdir /home/bao \
+        && chown -R bao:root /home/bao
 
-ENV VAULT_PLUGIN_HASH ${VAULT_PLUGIN_HASH}
-ENV HOME /home/vault
-ENV VAULT_PLUGIN_AUTOMTLS_ENABLED false
-RUN mkdir -p /vault/logs && \
-    mkdir -p /vault/file && \
-    mkdir -p /vault/config && \
-    mkdir -p /vault/plugins && \
+ENV BAO_PLUGIN_HASH ${BAO_PLUGIN_HASH}
+ENV HOME /home/bao
+ENV BAO_PLUGIN_AUTOMTLS_ENABLED false
+RUN mkdir -p /bao/logs && \
+    mkdir -p /bao/file && \
+    mkdir -p /bao/config && \
+    mkdir -p /bao/plugins && \
     mkdir -p /openhorizon/policy && \
-    chown -R vault:root /vault && chown -R vault:root $HOME && chown -R vault:root /openhorizon && \
+    chown -R bao:root /bao && chown -R bao:root $HOME && chown -R bao:root /openhorizon && \
     chgrp -R 0 $HOME && chmod -R g+rwX $HOME && \
-    chgrp -R 0 /vault && chmod -R g+rwX /vault && \
+    chgrp -R 0 /bao && chmod -R g+rwX /bao && \
     chgrp -R 0 /openhorizon && chmod -R g+rwX /openhorizon
 
 
 # Expose the logs directory as a volume since there's potentially long-running
 # state in there
-VOLUME /vault/logs
+VOLUME /bao/logs
 
 # Expose the file directory as a volume since there's potentially long-running
 # state in there
-VOLUME /vault/file
+VOLUME /bao/file
 
 # 8200/tcp is the primary interface that applications use to interact with
-# Vault.
+# Bao.
 EXPOSE 8200
 
 # For production derivatives of this container, you shoud add the IPC_LOCK
@@ -99,13 +102,13 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 #
 ENTRYPOINT ["entrypoint.sh"]
 
-COPY bin/hznvaultauth /vault/plugins/hznvaultauth
-COPY config/config.hcl /vault/config/config.hcl
+COPY bin/hznbaoauth /bao/plugins/hznbaoauth
+COPY config/config.hcl /bao/config/config.hcl
 COPY policy/agbot.acl.policy.hcl /openhorizon/policy/agbot.acl.policy.hcl
 
-RUN chmod +x /vault/plugins/hznvaultauth
+RUN chmod +x /bao/plugins/hznbaoauth
 
-USER vault
+USER bao
 
 # By default you'll get a single-node development server that stores everything
 # in RAM and bootstraps itself. Don't use this configuration for production.

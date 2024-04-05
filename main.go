@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/sdk/plugin"
-	ohplugin "github.com/open-horizon/vault-exchange-auth/plugin"
+	"github.com/openbao/openbao/api"
+	"github.com/openbao/openbao/sdk/plugin"
+	ohplugin "github.com/open-horizon/openbao-exchange-auth/plugin"
 	"log"
 	"os"
 )
