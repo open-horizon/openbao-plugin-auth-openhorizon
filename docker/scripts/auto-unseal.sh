@@ -1,26 +1,26 @@
 #!/bin/sh -x
 unsealed=false
 
-if [ "$VAULT_KEYS" == "" ];then 
-  VAULT_KEYS=ibm-edge-auth
+if [ "$BAO_KEYS" == "" ];then
+  BAO_KEYS=ibm-edge-auth
 fi
-vault_keys=$VAULT_KEYS
+bao_keys=$BAO_KEYS
 
 while true
 do
   init_status=`vault status  2>/dev/null |grep "Initialized"|awk '{print $2}'|tr -d '\r'`
   seal_status=`vault status  2>/dev/null |grep "Sealed"|awk '{print $2}'|tr -d '\r'`
   if [ "$init_status" != "true" ];then
-    output="Vault is not initialized"
+    output="Bao is not initialized"
   elif [ "$seal_status" == "false" ];then
-    output="Vault is unsealed"
+    output="Bao is unsealed"
     unsealed=true
-  elif  [ `kubectl get secret |grep "$vault_keys" |wc -l` == 0 ]; then
+  elif  [ `kubectl get secret |grep "$bao_keys" |wc -l` == 0 ]; then
     output="Unseal tokens are not found."
   else 
 
     set +x
-    keys=`kubectl get secret $vault_keys -o=jsonpath='{.data.vault-unseal-keys}'|base64 -d`
+    keys=`kubectl get secret $bao_keys -o=jsonpath='{.data.bao-unseal-keys}'|base64 -d`
     IFS=$',' keys=( $keys )
     for var in ${keys[@]}  
     do    

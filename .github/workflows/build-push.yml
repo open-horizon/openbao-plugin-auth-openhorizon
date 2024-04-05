@@ -26,7 +26,7 @@ jobs:
       GOPATH: ${{ github.workspace }}/go 
       REPO_DIR: ${{ github.workspace }}/go/src/github.com/${{ github.repository }}
       IMAGE_NAME: amd64_vault
-      BINARY_NAME: hznvaultauth
+      BINARY_NAME: hznbaoauth
 
     # Executed sequentially when job runs
     steps:
@@ -90,10 +90,10 @@ jobs:
           path: go/src/github.com/${{ github.repository }}
 
       # Prepare the environment
-      - name: Set up golang 1.19
+      - name: Set up golang 1.22.1
         uses: actions/setup-go@v2
         with:
-          go-version: '1.19'
+          go-version: '1.22.1'
           check-latest: true
 
       # Configure version variables for later steps, stored in our workflow env. variables
