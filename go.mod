@@ -1,12 +1,12 @@
-module github.com/open-horizon/vault-exchange-auth
+module github.com/open-horizon/openbao-exchange-auth
 
-go 1.21
+go 1.22.1
 
 toolchain go1.22.1
 
 require (
-	github.com/hashicorp/vault/api v1.12.2
-	github.com/hashicorp/vault/sdk v0.11.1
+	github.com/openbao/openbao/api v0.0.0-20240405125007-124a5f10bc23
+	github.com/openbao/openbao/sdk v0.0.0-20240405125007-124a5f10bc23
 )
 
 require (
