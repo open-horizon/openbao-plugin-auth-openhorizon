@@ -21,27 +21,25 @@ RUN set -eux; \
     microdnf update -y; \
     microdnf install -y ca-certificates shadow-utils gnupg openssl libcap wget tzdata unzip gzip tar && \
     found=''; \
-    for server in \
-        hkp://p80.pool.sks-keyservers.net:80 \
-        hkp://keyserver.ubuntu.com:80 \
-        hkp://pgp.mit.edu:80 \
-    ; do \
-        echo "Fetching GPG key $BAO_GPGKEY from $server"; \
-        gpg --batch --keyserver "$server" --recv-keys "$BAO_GPGKEY" && found=yes && break; \
-    done; \
-    test -z "$found" && echo >&2 "error: failed to fetch GPG key $BAO_GPGKEY" && exit 1; \
+    # for server in \
+    #    hkp://p80.pool.sks-keyservers.net:80 \
+    #    hkp://keyserver.ubuntu.com:80 \
+    #    hkp://pgp.mit.edu:80 \
+    #; do \
+    #    echo "Fetching GPG key $BAO_GPGKEY from $server"; \
+    #    gpg --batch --keyserver "$server" --recv-keys "$BAO_GPGKEY" && found=yes && break; \
+    # done; \
+    # test -z "$found" && echo >&2 "error: failed to fetch GPG key $BAO_GPGKEY" && exit 1; \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
     wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
     chmod +x /usr/local/bin/dumb-init && \
-    wget https://github.com/openbao/openbao/releases/download/${BAO_VERSION}/openbao_${BAO_VERSION}_linux_${ARCH}.zip.zip && \
+    wget https://github.com/openbao/openbao/releases/download/v${BAO_VERSION}/openbao_${BAO_VERSION}_linux_${ARCH}.zip && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_linux_${ARCH}.zip && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS.sig && \
     # gpg --batch --verify bao_${BAO_VERSION}_SHA256SUMS.sig bao_${BAO_VERSION}_SHA256SUMS && \
     # grep bao_${BAO_VERSION}_linux_${ARCH}.zip bao_${BAO_VERSION}_SHA256SUMS | sha256sum -c && \
-    # unzip -d /bin bao_${BAO_VERSION}_linux_${ARCH}.zip && \
-    unzip -d /openbao_${BAO_VERSION}_linux_${ARCH}.zip openbao_${BAO_VERSION}_linux_${ARCH}.zip.zip && \
     unzip -d /bin openbao_${BAO_VERSION}_linux_${ARCH}.zip && \
     cd /tmp && \
     rm -rf /tmp/build && \
