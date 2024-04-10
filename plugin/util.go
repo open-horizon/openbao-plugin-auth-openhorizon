@@ -8,4 +8,3 @@ import (
 var ohlog = func(v interface{}) string {
 	return fmt.Sprintf("openhorizon auth plugin: %v", v)
 }
-s

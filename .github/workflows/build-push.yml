@@ -19,13 +19,13 @@ env:
 jobs:
   # Build and pushes to Dockerhub
   build-push:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Environment variables available to all steps
     env:
       GOPATH: ${{ github.workspace }}/go 
       REPO_DIR: ${{ github.workspace }}/go/src/github.com/${{ github.repository }}
-      IMAGE_NAME: amd64_vault
+      IMAGE_NAME: amd64_bao
       BINARY_NAME: hznbaoauth
 
     # Executed sequentially when job runs

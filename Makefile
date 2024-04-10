@@ -4,17 +4,17 @@ SHELL := /bin/bash
 arch_tag ?= $(shell ./tools/arch-tag)
 arch ?= $(arch_tag)
 
-OPENBAO_VERSION ?= v2.0.0-alpha20240329
-OPENBAO_GPGKEY ?= "" #C874011F0AB405110D02105534365D9472D7468F
-OPENBAO_PLUGIN_HASH := ""
+BAO_VERSION ?= 2.0.0-alpha20240329
+BAO_GPGKEY ?= "" #C874011F0AB405110D02105534365D9472D7468F
+BAO_PLUGIN_HASH := ""
 
 EXECUTABLE := hznbaoauth
 DOCKER_INAME ?= openhorizon/$(arch)_bao
-VERSION ?= 1.1.3
+VERSION ?= 1.2.0
 DEV_VERSION ?=testing
-DOCKER_IMAGE_LABELS ?= --label "name=$(arch)_bao" --label "version=$(VERSION)" --label "bao_version=$(OPENBAO_VERSION)" --label "release=$(shell git rev-parse --short HEAD)"
+DOCKER_IMAGE_LABELS ?= --label "name=$(arch)_bao" --label "version=$(VERSION)" --label "bao_version=$(BAO_VERSION)" --label "release=$(shell git rev-parse --short HEAD)"
 
-DOCKER_DEV_OPTS ?= --rm --no-cache --build-arg ARCH=$(arch) --build-arg OPENBAO_VERSION=$(OPENBAO_VERSION) --build-arg OPENBAO_GPGKEY=$(VAULT_GPGKEY) --build-arg OPENBAO_PLUGIN_HASH=$(OPENBAO_PLUGIN_HASH)
+DOCKER_DEV_OPTS ?= --rm --no-cache --build-arg ARCH=$(arch) --build-arg BAO_VERSION=$(BAO_VERSION) --build-arg BAO_GPGKEY=$(BAO_GPGKEY) --build-arg BAO_PLUGIN_HASH=$(BAO_PLUGIN_HASH)
 
 # license file name
 export LICENSE_FILE = LICENSE.txt
