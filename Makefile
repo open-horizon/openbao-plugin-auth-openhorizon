@@ -6,7 +6,7 @@ arch ?= $(arch_tag)
 
 BAO_VERSION ?= 2.0.0-alpha20240329
 BAO_GPGKEY ?= "" #C874011F0AB405110D02105534365D9472D7468F
-BAO_PLUGIN_HASH := ""
+VAULT_PLUGIN_HASH := ""
 
 EXECUTABLE := hznbaoauth
 DOCKER_INAME ?= openhorizon/$(arch)_bao
@@ -42,10 +42,10 @@ $(EXECUTABLE): $(shell find . -name '*.go')
 	@echo "Producing $(EXECUTABLE) for arch: amd64"
 	$(COMPILE_ARGS) go build -o ./docker/bin/$(EXECUTABLE)
 
-bao-image: OPENBAO_PLUGIN_HASH=$(shell shasum -a 256 ./docker/bin/$(EXECUTABLE) | awk '{ print $$1 }')
+bao-image: VAULT_PLUGIN_HASH=$(shell shasum -a 256 ./docker/bin/$(EXECUTABLE) | awk '{ print $$1 }')
 
 bao-image:
-	@echo "Handling $(DOCKER_INAME):$(VERSION) with hash $(OPENBAO_PLUGIN_HASH)"
+	@echo "Handling $(DOCKER_INAME):$(VERSION) with hash $(VAULT_PLUGIN_HASH)"
 	if [ -n "$(shell docker images | grep '$(DOCKER_INAME):$(VERSION)')" ]; then \
 		echo "Skipping since $(DOCKER_INAME):$(VERSION) image exists, run 'make clean && make' if a rebuild is desired"; \
 	elif [[ $(arch) == "amd64" ]]; then \
