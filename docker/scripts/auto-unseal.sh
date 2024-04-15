@@ -8,8 +8,8 @@ bao_keys=$BAO_KEYS
 
 while true
 do
-  init_status=`vault status  2>/dev/null |grep "Initialized"|awk '{print $2}'|tr -d '\r'`
-  seal_status=`vault status  2>/dev/null |grep "Sealed"|awk '{print $2}'|tr -d '\r'`
+  init_status=`bao status  2>/dev/null |grep "Initialized"|awk '{print $2}'|tr -d '\r'`
+  seal_status=`bao status  2>/dev/null |grep "Sealed"|awk '{print $2}'|tr -d '\r'`
   if [ "$init_status" != "true" ];then
     output="Bao is not initialized"
   elif [ "$seal_status" == "false" ];then
@@ -24,7 +24,7 @@ do
     IFS=$',' keys=( $keys )
     for var in ${keys[@]}  
     do    
-      vault operator unseal $var
+      bao operator unseal $var
     done
     set -x
 

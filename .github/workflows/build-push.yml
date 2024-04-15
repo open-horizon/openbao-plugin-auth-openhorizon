@@ -103,7 +103,7 @@ jobs:
           cd ${REPO_DIR}
           echo "VERSION=$(sed -n 's/^VERSION ?= //p' Makefile | cut -d '$' -f 1)" >> $GITHUB_OUTPUT
 
-      # Compile Vault and Build Docker Images
+      # Compile Bao and Build Docker Images
       - name: Compile and Build Docker Images
         run: |
           cd ${REPO_DIR}

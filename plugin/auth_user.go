@@ -72,7 +72,7 @@ func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password 
 			// The user is an org admin.
 			foundAdminUser = true
 
-			// Ensure that the vault ACL policies needed by this user are defined in the vault.
+			// Ensure that the bao ACL policies needed by this user are defined in the bao.
 			policyName, err = o.setupUserPolicies(userOrg, orgAndUsername[1], foundAdminUser, tok)
 			if err != nil {
 				o.Logger().Error(ohlog(fmt.Sprintf("unable to setup ACL policies for user (%s) as an admin, error: %v", fullOrgUser, err)))
@@ -84,7 +84,7 @@ func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password 
 			// The user is a regular user.
 			foundUser = true
 
-			// Ensure that the vault ACL policies needed by this user are defined in the vault.
+			// Ensure that the bao ACL policies needed by this user are defined in the bao.
 			policyName, err = o.setupUserPolicies(userOrg, orgAndUsername[1], !foundUser, tok)
 			if err != nil {
 				o.Logger().Error(ohlog(fmt.Sprintf("unable to setup ACL policies for user (%s), error: %v", fullOrgUser, err)))

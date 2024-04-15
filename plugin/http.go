@@ -138,12 +138,12 @@ func (o *ohAuthPlugin) invokeExchange(url string, user string, pw string) (*http
 	}
 }
 
-// Common function to invoke the Vault API.
+// Common function to invoke the bao API.
 func (o *ohAuthPlugin) InvokeVault(url string, method string, vaultToken string) (*http.Response, error) {
 
 	apiMsg := fmt.Sprintf("%v %v", method, url)
 
-	// Create an outgoing HTTP request for the vault.
+	// Create an outgoing HTTP request for the bao.
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("unable to create HTTP request for %v, error %v", apiMsg, err))
@@ -152,7 +152,7 @@ func (o *ohAuthPlugin) InvokeVault(url string, method string, vaultToken string)
 	req.Header.Add("X-Vault-Token", vaultToken)
 	req.Close = true
 
-	// Send the request to the vault.
+	// Send the request to the bao.
 	resp, err := o.httpClient.Do(req)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("unable to send HTTP request for %v, error %v", apiMsg, err))

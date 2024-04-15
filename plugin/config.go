@@ -50,7 +50,7 @@ func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *
 		return nil, errors.New(ohlog(fmt.Sprintf("failed to write secret (%s), error: %v", EXCHANGE_URL_STORAGE_KEY, err)))
 	}
 
-	// Store the vault token used to setup the vault.
+	// Store the bao token used to setup the bao.
 	token := d.Get(CONFIG_TOKEN_KEY).(string)
 	if token == "" {
 		return nil, errors.New(ohlog(fmt.Sprintf("%s is a required parameter", CONFIG_TOKEN_KEY)))
@@ -68,7 +68,7 @@ func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *
 		return nil, errors.New(ohlog(fmt.Sprintf("failed to write secret (%s), error: %v", AGBOT_RENEWAL_KEY, err)))
 	}
 
-	// Store the vault API URL used by the plugin to invoke vault APIs.
+	// Store the bao API URL used by the plugin to invoke bao APIs.
 	vaultAPIURL := d.Get(CONFIG_VAULT_API_KEY).(string)
 	if vaultAPIURL == "" {
 		vaultAPIURL = DEFAULT_APIURL
@@ -77,7 +77,7 @@ func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *
 		return nil, errors.New(ohlog(fmt.Sprintf("failed to write secret (%s), error: %v", VAULT_APIURL_STORAGE_KEY, err)))
 	}
 
-	// Set the URL into the vault client object.
+	// Set the URL into the bao client object.
 	if err = o.vc.SetAddress(vaultAPIURL); err != nil {
 		return nil, errors.New(ohlog(fmt.Sprintf("failed to set vault URL in the client, error: %v", err)))
 	}
@@ -90,7 +90,7 @@ func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *
 	return nil, nil
 }
 
-// Extract the exchange URL and vault token from plugin storage.
+// Extract the exchange URL and bao token from plugin storage.
 func (o *ohAuthPlugin) getConfig(ctx context.Context, req *logical.Request) (exURL string, token string, renewalRate int, err error) {
 
 	var url *logical.StorageEntry
@@ -109,7 +109,7 @@ func (o *ohAuthPlugin) getConfig(ctx context.Context, req *logical.Request) (exU
 
 	var tok *logical.StorageEntry
 
-	// Extract the agbot vault token from plugin storage.
+	// Extract the agbot bao token from plugin storage.
 	tok, err = req.Storage.Get(ctx, VAULT_TOKEN_STORAGE_KEY)
 	if err != nil {
 		return

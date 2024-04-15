@@ -34,7 +34,7 @@ func (o *ohAuthPlugin) setupUserPolicies(userOrg string, userId string, admin bo
 	// TODO: VAULT_TOKEN env var is read by NewClient()
 	o.vc.SetToken(vaultToken)
 
-	// Get a handle to the vault system APIs
+	// Get a handle to the bao system APIs
 	sysVC := o.vc.Sys()
 
 	// The admin privileges of a user can change at any time. First remove any policies that might exist but which no longer apply
@@ -93,7 +93,7 @@ func (o *ohAuthPlugin) setupUserPolicies(userOrg string, userId string, admin bo
 		o.Logger().Info(ohlog(fmt.Sprintf("constructed policy %v for user (%s/%s)", policyString, userOrg, userId)))
 	}
 
-	// Add the policy to the vault.
+	// Add the policy to the bao.
 	if err := sysVC.PutPolicy(policyName, policyString); err != nil {
 		o.Logger().Error(ohlog(fmt.Sprintf("PutPolicy for %v failed, error: %v", policyName, err)))
 		return "", err
@@ -112,7 +112,7 @@ func (o *ohAuthPlugin) setupAgbotPolicies(vaultToken string) (err error) {
 
 	o.vc.SetToken(vaultToken)
 
-	// Get a handle to the vault system APIs
+	// Get a handle to the bao system APIs
 	sysVC := o.vc.Sys()
 
 	// Create a policy for the agbot. If the agbot has been seen before, the correct policy might already exist.
@@ -126,7 +126,7 @@ func (o *ohAuthPlugin) setupAgbotPolicies(vaultToken string) (err error) {
 	// If a policy does not already exist for the agbot, create it.
 	if np == "" {
 
-		// Add the policy to the vault.
+		// Add the policy to the bao.
 		err := sysVC.PutPolicy(AGBOT_POLICY_NAME, AGBOT_POLICY)
 		if err != nil {
 			o.Logger().Error(ohlog(fmt.Sprintf("PutPolicy for %v failed, error: %v", AGBOT_POLICY_NAME, err)))

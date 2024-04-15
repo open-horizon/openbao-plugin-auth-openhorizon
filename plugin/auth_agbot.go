@@ -48,7 +48,7 @@ func (o *ohAuthPlugin) AuthenticateAsAgbot(exURL string, tok string, renewal int
 		// The caller is an Agbot.
 		foundAgbot = true
 
-		// Ensure that the vault ACL policies needed by the agbot are defined in the vault.
+		// Ensure that the bao ACL policies needed by the agbot are defined in the bao.
 		err = o.setupAgbotPolicies(tok)
 		if err != nil {
 			o.Logger().Error(ohlog(fmt.Sprintf("unable to setup ACL policies for agbot (%s), error: %v", agbotId, err)))

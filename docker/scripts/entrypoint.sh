@@ -57,9 +57,9 @@ fi
 if [ "$1" = 'server' ]; then
     shift
     set -- bao server \
-        -config="$VAULT_CONFIG_DIR" \
-        -dev-root-token-id="$VAULT_DEV_ROOT_TOKEN_ID" \
-        -dev-listen-address="${VAULT_DEV_LISTEN_ADDRESS:-"0.0.0.0:8200"}" \
+        -config="$BAO_CONFIG_DIR" \
+        -dev-root-token-id="$BAO_DEV_ROOT_TOKEN_ID" \
+        -dev-listen-address="${BAO_DEV_LISTEN_ADDRESS:-"0.0.0.0:8200"}" \
         "$@"
 elif [ "$1" = 'version' ]; then
     # This needs a special case because there's no help output.
