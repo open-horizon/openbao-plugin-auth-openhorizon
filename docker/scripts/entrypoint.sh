@@ -36,15 +36,15 @@ if [ -n "$BAO_CLUSTER_INTERFACE" ]; then
     echo "Using $BAO_CLUSTER_INTERFACE for BAO_CLUSTER_ADDR: $BAO_CLUSTER_ADDR"
 fi
 
-# BAO_CONFIG_DIR isn't exposed as a volume but you can compose additional
+# VAULT_CONFIG_DIR isn't exposed as a volume but you can compose additional
 # config files in there if you use this image as a base, or use
 # VAULT_LOCAL_CONFIG below.
 VAULT_CONFIG_DIR=/vault/config
 
 # You can also set the VAULT_LOCAL_CONFIG environment variable to pass some
 # Bao configuration JSON without having to bind any volumes.
-if [ -n "$VAULT_CONFIG_DIR" ]; then
-    echo "$VAULT_CONFIG_DIR" > "$VAULT_CONFIG_DIR/local.json"
+if [ -n "$VAULT_LOCAL_CONFIG" ]; then
+    echo "$VAULT_LOCAL_CONFIG" > "$VAULT_CONFIG_DIR/local.json"
 fi
 
 # If the user is trying to run Bao directly with some arguments, then

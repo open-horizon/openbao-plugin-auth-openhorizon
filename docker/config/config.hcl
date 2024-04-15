@@ -1,1 +1,1 @@
-plugin_directory = "/openbao/plugins"
+plugin_directory = "/vault/plugins"
