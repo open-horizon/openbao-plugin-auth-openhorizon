@@ -8,11 +8,11 @@ import (
 	"os"
 )
 
-// This plugin provides authentication support for openhorizon users within the vault.
+// This plugin provides authentication support for openhorizon users within the bao.
 //
-// It uses the Vault's framework to interact with the plugin system.
+// It uses the bao's framework to interact with the plugin system.
 //
-// This plugin must be configured by a vault admin through the /config API. Without the config, the plugin
+// This plugin must be configured by a bao admin through the /config API. Without the config, the plugin
 // is unable to function properly.
 
 func main() {

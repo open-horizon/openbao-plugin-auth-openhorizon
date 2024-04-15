@@ -31,7 +31,7 @@ func (o *ohAuthPlugin) pathAuthRenew(ctx context.Context, req *logical.Request, 
 	agbotOrg := agbotParts[0]
 	id := agbotParts[1]
 
-	// Extract the exchange URL and vault token from plugin storage. The values are stored in plugin storage when the
+	// Extract the exchange URL and bao token from plugin storage. The values are stored in plugin storage when the
 	// config API is invoked.
 	exURL, tok, renewal, err := o.getConfig(ctx, req)
 

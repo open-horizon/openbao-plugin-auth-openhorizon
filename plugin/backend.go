@@ -18,13 +18,13 @@ const CONFIG_VAULT_API_KEY = "apiurl"
 
 type ohAuthPlugin struct {
 
-	// The vault auth plugin framework.
+	// The bao auth plugin framework.
 	*framework.Backend
 
 	// An HTTP client used to call the openhorizon exchange.
 	httpClient *http.Client
 
-	// A vault client used to interact with the system.
+	// A bao client used to interact with the system.
 	vc *api.Client
 }
 
@@ -39,7 +39,7 @@ func OHAuthPlugin(c *logical.BackendConfig) *ohAuthPlugin {
 
 	b.vc, err = api.NewClient(nil)
 	if err != nil {
-		panic(ohlog(fmt.Sprintf("could not create vault client, error: %v", err)))
+		panic(ohlog(fmt.Sprintf("could not create bao client, error: %v", err)))
 	}
 
 	b.Backend = &framework.Backend{

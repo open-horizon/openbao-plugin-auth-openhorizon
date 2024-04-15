@@ -12,7 +12,7 @@ import (
 // The exchange root user id.
 const EX_ROOT_USER = "root"
 
-// The vault plugin framework calls this method to process login requests.
+// The bao plugin framework calls this method to process login requests.
 func (o *ohAuthPlugin) pathAuthLogin(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 
 	// Extract the user authentication info from the request.
@@ -28,7 +28,7 @@ func (o *ohAuthPlugin) pathAuthLogin(ctx context.Context, req *logical.Request, 
 		o.Logger().Info(ohlog(fmt.Sprintf("handling login for user (%s/%s)", userOrg, userId)))
 	}
 
-	// Extract the exchange URL and vault token from plugin storage. The values are stored in plugin storage when the
+	// Extract the exchange URL and bao token from plugin storage. The values are stored in plugin storage when the
 	// config API is invoked.
 	exURL, tok, renewal, err := o.getConfig(ctx, req)
 

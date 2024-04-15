@@ -5,14 +5,14 @@ export NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 kubectl=kubectl
 
 if [ "$BAO_CREDENTIAL" == "" ];then
-  BAO_CREDENTIAL=vault-default-deploy-vault-credential
+  BAO_CREDENTIAL=bao-default-deploy-bao-credential
 fi
 bao_credential=$BAO_CREDENTIAL
 
 
 #get root token
 baoToken=`$kubectl get secret $bao_credential -n $NAMESPACE -o=jsonpath={.data.token} | base64 -d`
-#get vault endpoint
+#get bao endpoint
 endpoint=`$kubectl get secret $bao_credential -n $NAMESPACE -o=jsonpath={.data.endpoint} | base64 -d`
 
 #get all BaoAccess CRs, if autoRenewToken == true, then renew
