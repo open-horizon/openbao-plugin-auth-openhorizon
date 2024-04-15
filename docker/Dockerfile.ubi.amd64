@@ -65,7 +65,7 @@ RUN mkdir -p /vault/logs && \
     mkdir -p /openhorizon/policy && \
     chown -R bao:root /vault && chown -R bao:root $HOME && chown -R bao:root /openhorizon && \
     chgrp -R 0 $HOME && chmod -R g+rwX $HOME && \
-    chgrp -R 0 /bao && chmod -R g+rwX /bao && \
+    chgrp -R 0 /vault && chmod -R g+rwX /vault && \
     chgrp -R 0 /openhorizon && chmod -R g+rwX /openhorizon
 
 
