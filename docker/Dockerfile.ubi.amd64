@@ -12,7 +12,7 @@ COPY LICENSE.txt /licenses
 ARG BAO_VERSION
 ARG BAO_GPGKEY
 ARG ARCH
-ARG BAO_PLUGIN_HASH
+ARG VAULT_PLUGIN_HASH
 
 # Create a bao user and group first so the IDs get set the same way.
 
@@ -48,22 +48,22 @@ RUN set -eux; \
     # rm -rf /root/.gnupg  && \
     microdnf clean all
 
-# /bao/logs is made available to use as a location to store audit logs
-# /bao/file is made available to use as a location with the file storage backend
-# the server will be started with /bao/config as the configuration directory so you can add additional config files in that location.
+# /vault/logs is made available to use as a location to store audit logs
+# /vault/file is made available to use as a location with the file storage backend
+# the server will be started with /vault/config as the configuration directory so you can add additional config files in that location.
 RUN useradd -r -u 1000 -g root bao \
         && mkdir /home/bao \
         && chown -R bao:root /home/bao
 
-ENV BAO_PLUGIN_HASH ${BAO_PLUGIN_HASH}
+ENV VAULT_PLUGIN_HASH ${VAULT_PLUGIN_HASH}
 ENV HOME /home/bao
-ENV BAO_PLUGIN_AUTOMTLS_ENABLED false
-RUN mkdir -p /bao/logs && \
-    mkdir -p /bao/file && \
-    mkdir -p /bao/config && \
-    mkdir -p /bao/plugins && \
+ENV VAULT_PLUGIN_AUTOMTLS_ENABLED false
+RUN mkdir -p /vault/logs && \
+    mkdir -p /vault/file && \
+    mkdir -p /vault/config && \
+    mkdir -p /vault/plugins && \
     mkdir -p /openhorizon/policy && \
-    chown -R bao:root /bao && chown -R bao:root $HOME && chown -R bao:root /openhorizon && \
+    chown -R bao:root /vault && chown -R bao:root $HOME && chown -R bao:root /openhorizon && \
     chgrp -R 0 $HOME && chmod -R g+rwX $HOME && \
     chgrp -R 0 /bao && chmod -R g+rwX /bao && \
     chgrp -R 0 /openhorizon && chmod -R g+rwX /openhorizon
@@ -71,11 +71,11 @@ RUN mkdir -p /bao/logs && \
 
 # Expose the logs directory as a volume since there's potentially long-running
 # state in there
-VOLUME /bao/logs
+VOLUME /vault/logs
 
 # Expose the file directory as a volume since there's potentially long-running
 # state in there
-VOLUME /bao/file
+VOLUME /vault/file
 
 # 8200/tcp is the primary interface that applications use to interact with
 # Bao.
@@ -100,11 +100,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 #
 ENTRYPOINT ["entrypoint.sh"]
 
-COPY bin/hznbaoauth /bao/plugins/hznbaoauth
-COPY config/config.hcl /bao/config/config.hcl
+COPY bin/hznbaoauth /vault/plugins/hznbaoauth
+COPY config/config.hcl /vault/config/config.hcl
 COPY policy/agbot.acl.policy.hcl /openhorizon/policy/agbot.acl.policy.hcl
 
-RUN chmod +x /bao/plugins/hznbaoauth
+RUN chmod +x /vault/plugins/hznbaoauth
 
 USER bao
 

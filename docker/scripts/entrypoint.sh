@@ -23,7 +23,7 @@ get_addr () {
       exit}'
 }
 
-if [ -z "$BAO_DEV_LISTEN_ADDRESS" ]; then
+if [ -z "$VAULT_DEV_LISTEN_ADDRESS" ]; then
     auto-unseal.sh &
 fi
 
@@ -38,13 +38,13 @@ fi
 
 # BAO_CONFIG_DIR isn't exposed as a volume but you can compose additional
 # config files in there if you use this image as a base, or use
-# BAO_LOCAL_CONFIG below.
-BAO_CONFIG_DIR=/bao/config
+# VAULT_LOCAL_CONFIG below.
+VAULT_CONFIG_DIR=/vault/config
 
-# You can also set the BAO_LOCAL_CONFIG environment variable to pass some
+# You can also set the VAULT_LOCAL_CONFIG environment variable to pass some
 # Bao configuration JSON without having to bind any volumes.
-if [ -n "$BAO_LOCAL_CONFIG" ]; then
-    echo "$BAO_LOCAL_CONFIG" > "$BAO_CONFIG_DIR/local.json"
+if [ -n "$VAULT_CONFIG_DIR" ]; then
+    echo "$VAULT_CONFIG_DIR" > "$VAULT_CONFIG_DIR/local.json"
 fi
 
 # If the user is trying to run Bao directly with some arguments, then
@@ -57,9 +57,9 @@ fi
 if [ "$1" = 'server' ]; then
     shift
     set -- bao server \
-        -config="$BAO_CONFIG_DIR" \
+        -config="$VAULT_CONFIG_DIR" \
         -dev-root-token-id="$BAO_DEV_ROOT_TOKEN_ID" \
-        -dev-listen-address="${BAO_DEV_LISTEN_ADDRESS:-"0.0.0.0:8200"}" \
+        -dev-listen-address="${VAULT_DEV_LISTEN_ADDRESS:-"0.0.0.0:8200"}" \
         "$@"
 elif [ "$1" = 'version' ]; then
     # This needs a special case because there's no help output.
