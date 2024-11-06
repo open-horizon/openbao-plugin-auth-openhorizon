@@ -4,8 +4,8 @@ SHELL := /bin/bash
 arch_tag ?= $(shell ./tools/arch-tag)
 arch ?= $(arch_tag)
 
-BAO_VERSION ?= 2.0.0-alpha20240329
-BAO_GPGKEY ?= "" #C874011F0AB405110D02105534365D9472D7468F
+BAO_VERSION ?= 2.0.2
+BAO_GPGKEY ?= ""
 VAULT_PLUGIN_HASH := ""
 
 EXECUTABLE := hznbaoauth

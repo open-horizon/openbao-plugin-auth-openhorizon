@@ -1,6 +1,6 @@
 module github.com/open-horizon/openbao-exchange-auth
 
-go 1.22.1
+go 1.22.8
 
 require (
 	github.com/openbao/openbao/api v1.100.0-development20240408
