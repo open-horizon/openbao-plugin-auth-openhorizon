@@ -23,10 +23,10 @@ jobs:
 
     # Environment variables available to all steps
     env:
-      GOPATH: ${{ github.workspace }}/go 
+      GOPATH: ${{ github.workspace }}/go
       REPO_DIR: ${{ github.workspace }}/go/src/github.com/${{ github.repository }}
       IMAGE_NAME: amd64_bao
-      BINARY_NAME: hznbaoauth
+      BINARY_NAME: openbao-plugin-auth-openhorizon
 
     # Executed sequentially when job runs
     steps:
@@ -67,7 +67,7 @@ jobs:
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable"
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-      
+
       # Authenticate Dockerhub to allow pushing to our image repo
       - name: Login to Dockerhub
         uses: docker/login-action@v3
@@ -90,10 +90,10 @@ jobs:
           path: go/src/github.com/${{ github.repository }}
 
       # Prepare the environment
-      - name: Set up golang 1.22.8
+      - name: Set up golang 1.22.7
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22.8'
+          go-version: '1.22.7'
           check-latest: true
 
       # Configure version variables for later steps, stored in our workflow env. variables
@@ -123,4 +123,4 @@ jobs:
           docker push ${GITHUB_CONTAINER_REGISTRY}/${IMAGE_NAME}:testing; \
           fi
         env:
-          VERSION: '${{ steps.config-version.outputs.VERSION }}-${{ steps.offset.outputs.BUILD_NUMBER }}'
+          VERSION: '${{ steps.config-version.outputs.VERSION }}-${{ steps.offset.outputs.BUILD_NUMBER }}'c

@@ -1,21 +1,22 @@
-package plugin
+package openhorizon
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/openbao/openbao/sdk/logical"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 const AGBOTID_RENEW_SECRET = "agbotid"
 const AGBOTPW_RENEW_SECRET = "password"
 
 // Attempt to authenticate the caller as an open horizon agbot.
-func (o *ohAuthPlugin) AuthenticateAsAgbot(exURL string, tok string, renewal int, userOrg, userId, password string) (*logical.Response, error) {
+func (o *backend) AuthenticateAsAgbot(exURL string, tok string, renewal int, userOrg, userId, password string) (*logical.Response, error) {
 
 	agbots, err := o.verifyAgbotCredentials(exURL, userOrg, userId, password)
 
@@ -85,7 +86,7 @@ func (o *ohAuthPlugin) AuthenticateAsAgbot(exURL string, tok string, renewal int
 			Metadata: map[string]string{
 				"agbot": strconv.FormatBool(true),
 			},
-			Period: time.Duration(renewal) * time.Second,
+			Period:    time.Duration(renewal) * time.Second,
 			TokenType: logical.TokenTypeService,
 			LeaseOptions: logical.LeaseOptions{
 				Renewable: true,
@@ -97,7 +98,7 @@ func (o *ohAuthPlugin) AuthenticateAsAgbot(exURL string, tok string, renewal int
 
 // Call the openhorizon exchange to validate the caller's credentials as an Agbot. This API call will use the caller's own credentials to verify that it can
 // retrieve the definition of it's own idenity from the exchange. This verifies that the caller's creds are good.
-func (o *ohAuthPlugin) verifyAgbotCredentials(exURL string, userOrg string, userId string, password string) (*GetAgbotsResponse, error) {
+func (o *backend) verifyAgbotCredentials(exURL string, userOrg string, userId string, password string) (*GetAgbotsResponse, error) {
 
 	// Log the exchange API that we are going to call.
 	url := fmt.Sprintf("%v/orgs/%v/agbots/%v", exURL, userOrg, userId)

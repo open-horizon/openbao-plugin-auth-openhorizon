@@ -1,10 +1,11 @@
-package plugin
+package openhorizon
 
 import (
 	"context"
 	"fmt"
-	"github.com/openbao/openbao/sdk/logical"
 	"os"
+
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 func Factory(ctx context.Context, c *logical.BackendConfig) (logical.Backend, error) {

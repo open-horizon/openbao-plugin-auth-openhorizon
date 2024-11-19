@@ -1,19 +1,20 @@
-package plugin
+package openhorizon
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/openbao/openbao/sdk/framework"
-	"github.com/openbao/openbao/sdk/logical"
 	"strings"
+
+	"github.com/openbao/openbao/sdk/v2/framework"
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 // The exchange root user id.
 const EX_ROOT_USER = "root"
 
 // The bao plugin framework calls this method to process login requests.
-func (o *ohAuthPlugin) pathAuthLogin(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (o *backend) pathAuthLogin(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 
 	// Extract the user authentication info from the request.
 	userOrg, userId, password, err := extractAndVerifyAuthCreds(d)

@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9-minimal:latest
 
-LABEL vendor="IBM"
+LABEL vendor="Open Horizon"
 LABEL summary="The secrets bao."
 LABEL description="Bao manages secrets used by applications deployed to edge nodes."
 
@@ -13,6 +13,7 @@ ARG BAO_VERSION
 ARG BAO_GPGKEY
 ARG ARCH
 ARG VAULT_PLUGIN_HASH
+ARG DUMB_INIT_VERSION
 
 # Create a bao user and group first so the IDs get set the same way.
 
@@ -32,9 +33,9 @@ RUN set -eux; \
     # test -z "$found" && echo >&2 "error: failed to fetch GPG key $BAO_GPGKEY" && exit 1; \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
-    wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
+    wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 && \
     chmod +x /usr/local/bin/dumb-init && \
-    wget https://github.com/openbao/openbao/releases/download/v${BAO_VERSION}/openbao_${BAO_VERSION}_linux_${ARCH}.zip && \
+    # wget https://github.com/openbao/openbao/releases/download/v${BAO_VERSION}/bao_${BAO_VERSION}_linux_amd64.pkg.tar.zst && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_linux_${ARCH}.zip && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS && \
     # wget https://releases.hashicorp.com/openbao/${BAO_VERSION}/bao_${BAO_VERSION}_SHA256SUMS.sig && \
@@ -100,11 +101,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 #
 ENTRYPOINT ["entrypoint.sh"]
 
-COPY bin/hznbaoauth /vault/plugins/hznbaoauth
+COPY bin/openbao-plugin-auth-openhorizon /vault/plugins/openbao-plugin-auth-openhorizon
 COPY config/config.hcl /vault/config/config.hcl
 COPY policy/agbot.acl.policy.hcl /openhorizon/policy/agbot.acl.policy.hcl
 
-RUN chmod +x /vault/plugins/hznbaoauth
+RUN chmod +x /vault/plugins/openbao-plugin-auth-openhorizon
 
 USER bao
 

@@ -1,11 +1,12 @@
-package plugin
+package openhorizon
 
 import (
 	"fmt"
-	"github.com/openbao/openbao/api"
-	"github.com/openbao/openbao/sdk/framework"
-	"github.com/openbao/openbao/sdk/logical"
 	"net/http"
+
+	"github.com/openbao/openbao/api/v2"
+	"github.com/openbao/openbao/sdk/v2/framework"
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 const AUTH_USER_KEY = "id"
@@ -16,7 +17,7 @@ const CONFIG_TOKEN_KEY = "token"
 const CONFIG_AGBOT_RENEWAL_KEY = "renewal"
 const CONFIG_VAULT_API_KEY = "apiurl"
 
-type ohAuthPlugin struct {
+type backend struct {
 
 	// The bao auth plugin framework.
 	*framework.Backend
@@ -28,8 +29,8 @@ type ohAuthPlugin struct {
 	vc *api.Client
 }
 
-func OHAuthPlugin(c *logical.BackendConfig) *ohAuthPlugin {
-	var b ohAuthPlugin
+func OHAuthPlugin(c *logical.BackendConfig) *backend {
+	var b backend
 	var err error
 
 	b.httpClient, err = NewHTTPClient()

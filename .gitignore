@@ -1,1 +1,7 @@
-/docker/bin/hznbaoauth
+.DS_Store
+.idea
+.vscode
+
+bin
+dist
+docker/bin
