@@ -1,18 +1,19 @@
-package plugin
+package openhorizon
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/openbao/openbao/sdk/logical"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 // Attempt to authenticate the caller as an open horizon user.
-func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password string) (*logical.Response, error) {
+func (o *backend) AuthenticateAsUser(exURL, tok, userOrg, userId, password string) (*logical.Response, error) {
 
 	// Verify that the caller's credentials are valid openhorizon exchange credentials.
 	users, err := o.verifyUserCredentials(exURL, userOrg, userId, password)
@@ -53,7 +54,7 @@ func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password 
 		if o.Logger().IsInfo() {
 			o.Logger().Info(ohlog(fmt.Sprintf("user (%s) found in the exchange", fullOrgUser)))
 		}
-		
+
 		// Interrogate the response to find the user that we're trying to authenticate.
 		if fullOrgUser == fmt.Sprintf("%s/%s", EX_ROOT_USER, EX_ROOT_USER) {
 			// exchange root user (root/root:{pwd}), no permission
@@ -116,7 +117,7 @@ func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password 
 		Auth: &logical.Auth{
 			Policies: []string{policyName},
 			Metadata: map[string]string{
-				"admin": strconv.FormatBool(foundAdminUser),
+				"admin":        strconv.FormatBool(foundAdminUser),
 				"exchangeUser": fullOrgUser,
 			},
 			LeaseOptions: logical.LeaseOptions{
@@ -129,7 +130,7 @@ func (o *ohAuthPlugin) AuthenticateAsUser(exURL, tok, userOrg, userId, password 
 
 // Call the openhorizon exchange to validate the caller's credentials. This API call will use the caller's own credentials to verify that it can
 // retrieve the definition of it's own idenity from the exchange. This verifies that the caller's creds are good.
-func (o *ohAuthPlugin) verifyUserCredentials(exURL string, userOrg string, userId string, password string) (*GetUsersResponse, error) {
+func (o *backend) verifyUserCredentials(exURL string, userOrg string, userId string, password string) (*GetUsersResponse, error) {
 
 	// Log the exchange API that we are going to call.
 	url := fmt.Sprintf("%v/orgs/%v/users/%v", exURL, userOrg, userId)

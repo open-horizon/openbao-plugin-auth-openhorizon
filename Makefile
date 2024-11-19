@@ -4,47 +4,56 @@ SHELL := /bin/bash
 arch_tag ?= $(shell ./tools/arch-tag)
 arch ?= $(arch_tag)
 
-BAO_VERSION ?= 2.0.0-alpha20240329
-BAO_GPGKEY ?= "" #C874011F0AB405110D02105534365D9472D7468F
+BAO_VERSION ?= 2.0.2
+BAO_GPGKEY ?= ""
 VAULT_PLUGIN_HASH := ""
 
-EXECUTABLE := hznbaoauth
+EXECUTABLE := openbao-plugin-auth-openhorizon
 DOCKER_INAME ?= openhorizon/$(arch)_bao
 VERSION ?= 1.2.0
 DEV_VERSION ?=testing
 DOCKER_IMAGE_LABELS ?= --label "name=$(arch)_bao" --label "version=$(VERSION)" --label "bao_version=$(BAO_VERSION)" --label "release=$(shell git rev-parse --short HEAD)"
+DUMB_INIT_VERSION ?= 1.2.5
 
-DOCKER_DEV_OPTS ?= --rm --no-cache --build-arg ARCH=$(arch) --build-arg BAO_VERSION=$(BAO_VERSION) --build-arg BAO_GPGKEY=$(BAO_GPGKEY) --build-arg BAO_PLUGIN_HASH=$(BAO_PLUGIN_HASH)
+DOCKER_DEV_OPTS ?= --rm --no-cache --build-arg ARCH=$(arch) --build-arg BAO_VERSION=$(BAO_VERSION) --build-arg BAO_GPGKEY=$(BAO_GPGKEY) --build-arg BAO_PLUGIN_HASH=$(BAO_PLUGIN_HASH) --build-arg DUMB_INIT_VERSION=$(DUMB_INIT_VERSION)
 
 # license file name
 export LICENSE_FILE = LICENSE.txt
 
-COMPILE_ARGS ?= CGO_ENABLED=0 GOARCH=amd64 GOOS=linux
+
+GOOS ?= linux
+GOARCH ?= amd
+CGO_ENABLED ?= 0
+COMPILE_ARGS ?= CGO_ENABLED=$(CGO_ENABLED) GOARCH=$(GOARCH) GOOS=$(GOOS)
 
 ifndef verbose
 .SILENT:
 endif
 
-all: $(EXECUTABLE) bao-image
-dev: $(EXECUTABLE) bao-dev-image
+all: $(EXECUTABLE)
+dev:  bao-dev-image
+image: bao-image
 check: test
 
 clean:
-	rm -f ./docker/bin/$(EXECUTABLE)
+	rm -f /bin/$(EXECUTABLE)
 	-@docker rmi $(DOCKER_INAME):$(VERSION) 2> /dev/null || :
 	-@docker rmi $(DOCKER_INAME):testing 2> /dev/null || :
 
+.PHONY: format
 format:
 	@echo "Formatting all Golang source code with gofmt"
 	find . -name '*.go' -exec gofmt -l -w {} \;
 
 $(EXECUTABLE): $(shell find . -name '*.go')
 	@echo "Producing $(EXECUTABLE) for arch: amd64"
-	$(COMPILE_ARGS) go build -o ./docker/bin/$(EXECUTABLE)
+	go mod tidy
+	go generate ./...
+	$(COMPILE_ARGS) go build -o bin/$(EXECUTABLE)
 
 bao-image: VAULT_PLUGIN_HASH=$(shell shasum -a 256 ./docker/bin/$(EXECUTABLE) | awk '{ print $$1 }')
 
-bao-image:
+bao-image: $(EXECUTABLE)
 	@echo "Handling $(DOCKER_INAME):$(VERSION) with hash $(VAULT_PLUGIN_HASH)"
 	if [ -n "$(shell docker images | grep '$(DOCKER_INAME):$(VERSION)')" ]; then \
 		echo "Skipping since $(DOCKER_INAME):$(VERSION) image exists, run 'make clean && make' if a rebuild is desired"; \
@@ -53,7 +62,7 @@ bao-image:
 		docker build $(DOCKER_DEV_OPTS) $(DOCKER_IMAGE_LABELS) -t $(DOCKER_INAME):$(VERSION) -f docker/Dockerfile.ubi.$(arch) ./docker; \
 	else echo "Building the openbao docker image is not supported on $(arch)"; fi
 
-bao-dev-image:
+bao-dev-image: $(EXECUTABLE)
 	@echo "Handling $(DOCKER_INAME):$(DEV_VERSION)"
 	if [ -n "$(shell docker images | grep '$(DOCKER_INAME):$(DEV_VERSION)')" ]; then \
 		echo "Skipping since $(DOCKER_INAME):$(DEV_VERSION) image exists, run 'make clean && make' if a rebuild is desired"; \
@@ -66,5 +75,9 @@ test:
 	@echo "Executing unit tests"
 	-@$(COMPILE_ARGS) go test -cover -tags=unit
 
-
-.PHONY: format
+.PHONY: dev-goreleaser
+#dev-goreleaser: export GPG_KEY_FILE := /dev/null
+dev-goreleaser: export GITHUB_REPOSITORY_OWNER = none
+dev-goreleaser: export RELEASE_BUILD_GOOS = linux
+dev-goreleaser:
+	goreleaser release --clean --timeout=60m --verbose --parallelism 2 --snapshot --skip sbom,sign

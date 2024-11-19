@@ -1,4 +1,4 @@
-package plugin
+package openhorizon
 
 import (
 	"crypto/tls"
@@ -70,7 +70,7 @@ func NewHTTPClient() (*http.Client, error) {
 }
 
 // Common function to invoke the Exchange API with builtin retry logic.
-func (o *ohAuthPlugin) InvokeExchangeWithRetry(url string, user string, pw string) (*http.Response, error) {
+func (o *backend) InvokeExchangeWithRetry(url string, user string, pw string) (*http.Response, error) {
 	var currRetry int
 	var resp *http.Response
 	var err error
@@ -112,7 +112,7 @@ func (o *ohAuthPlugin) InvokeExchangeWithRetry(url string, user string, pw strin
 }
 
 // Common function to invoke the Exchange API when checking for valid users.
-func (o *ohAuthPlugin) invokeExchange(url string, user string, pw string) (*http.Response, error) {
+func (o *backend) invokeExchange(url string, user string, pw string) (*http.Response, error) {
 
 	apiMsg := fmt.Sprintf("%v %v", http.MethodGet, url)
 
@@ -139,7 +139,7 @@ func (o *ohAuthPlugin) invokeExchange(url string, user string, pw string) (*http
 }
 
 // Common function to invoke the bao API.
-func (o *ohAuthPlugin) InvokeVault(url string, method string, vaultToken string) (*http.Response, error) {
+func (o *backend) InvokeVault(url string, method string, vaultToken string) (*http.Response, error) {
 
 	apiMsg := fmt.Sprintf("%v %v", method, url)
 

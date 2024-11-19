@@ -1,12 +1,13 @@
-package plugin
+package openhorizon
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/openbao/openbao/sdk/framework"
-	"github.com/openbao/openbao/sdk/logical"
 	"strconv"
+
+	"github.com/openbao/openbao/sdk/v2/framework"
+	"github.com/openbao/openbao/sdk/v2/logical"
 )
 
 const EXCHANGE_URL_STORAGE_KEY = "exchange-url"
@@ -17,7 +18,7 @@ const VAULT_APIURL_STORAGE_KEY = "vault-url"
 const DEFAULT_RENEWAL_RATE = 300
 const DEFAULT_APIURL = "http://localhost:8200"
 
-func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (o *backend) pathConfig(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 
 	// Validate that the exchange URL is reachable.
 	if o.Logger().IsInfo() {
@@ -91,7 +92,7 @@ func (o *ohAuthPlugin) pathConfig(ctx context.Context, req *logical.Request, d *
 }
 
 // Extract the exchange URL and bao token from plugin storage.
-func (o *ohAuthPlugin) getConfig(ctx context.Context, req *logical.Request) (exURL string, token string, renewalRate int, err error) {
+func (o *backend) getConfig(ctx context.Context, req *logical.Request) (exURL string, token string, renewalRate int, err error) {
 
 	var url *logical.StorageEntry
 
