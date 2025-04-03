@@ -123,4 +123,4 @@ jobs:
           docker push ${GITHUB_CONTAINER_REGISTRY}/${IMAGE_NAME}:testing; \
           fi
         env:
-          VERSION: '${{ steps.config-version.outputs.VERSION }}-${{ steps.offset.outputs.BUILD_NUMBER }}'c
+          VERSION: '${{ steps.config-version.outputs.VERSION }}-${{ steps.offset.outputs.BUILD_NUMBER }}'
