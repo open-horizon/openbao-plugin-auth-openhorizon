@@ -11,7 +11,7 @@ COPY LICENSE.txt /licenses
 # This is the release of OpenBao to pull in and the key to verify the download.
 ARG BAO_VERSION
 ARG BAO_GPGKEY
-ARG ARCH
+ARG ARCH="amd64"
 ARG VAULT_PLUGIN_HASH
 ARG DUMB_INIT_VERSION
 
@@ -19,8 +19,8 @@ ARG DUMB_INIT_VERSION
 
 # Set up certificates, our base tools, and Bao.
 RUN set -eux; \
-    microdnf update -y; \
-    microdnf install -y ca-certificates shadow-utils gnupg openssl libcap wget tzdata unzip gzip tar && \
+    microdnf update --nodocs --refresh -y; \
+    microdnf install --nodocs -y ca-certificates shadow-utils gnupg openssl libcap wget tzdata unzip gzip tar && \
     found=''; \
     # for server in \
     #    hkp://p80.pool.sks-keyservers.net:80 \

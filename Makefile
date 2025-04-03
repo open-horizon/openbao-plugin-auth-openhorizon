@@ -4,15 +4,15 @@ SHELL := /bin/bash
 arch_tag ?= $(shell ./tools/arch-tag)
 arch ?= $(arch_tag)
 
-BAO_VERSION ?= 2.0.2
+BAO_VERSION ?= 2.2.0
 BAO_GPGKEY ?= ""
 VAULT_PLUGIN_HASH := ""
 
 EXECUTABLE := openbao-plugin-auth-openhorizon
-DOCKER_INAME ?= openhorizon/$(arch)_bao
-VERSION ?= 1.2.0
+DOCKER_INAME ?= openhorizon/bao
+VERSION ?= 1.0.1
 DEV_VERSION ?=testing
-DOCKER_IMAGE_LABELS ?= --label "name=$(arch)_bao" --label "version=$(VERSION)" --label "bao_version=$(BAO_VERSION)" --label "release=$(shell git rev-parse --short HEAD)"
+DOCKER_IMAGE_LABELS ?= --label "name=bao" --label "version=$(VERSION)" --label "bao_version=$(BAO_VERSION)" --label "release=$(shell git rev-parse --short HEAD)"
 DUMB_INIT_VERSION ?= 1.2.5
 
 DOCKER_DEV_OPTS ?= --rm --no-cache --build-arg ARCH=$(arch) --build-arg BAO_VERSION=$(BAO_VERSION) --build-arg BAO_GPGKEY=$(BAO_GPGKEY) --build-arg BAO_PLUGIN_HASH=$(BAO_PLUGIN_HASH) --build-arg DUMB_INIT_VERSION=$(DUMB_INIT_VERSION)
@@ -22,7 +22,7 @@ export LICENSE_FILE = LICENSE.txt
 
 
 GOOS ?= linux
-GOARCH ?= amd
+GOARCH ?= amd64
 CGO_ENABLED ?= 0
 COMPILE_ARGS ?= CGO_ENABLED=$(CGO_ENABLED) GOARCH=$(GOARCH) GOOS=$(GOOS)
 
@@ -49,7 +49,7 @@ $(EXECUTABLE): $(shell find . -name '*.go')
 	@echo "Producing $(EXECUTABLE) for arch: amd64"
 	go mod tidy
 	go generate ./...
-	$(COMPILE_ARGS) go build -o bin/$(EXECUTABLE)
+	$(COMPILE_ARGS) go build -o bin/$(EXECUTABLE) ./cmd/$(EXECUTABLE)
 
 bao-image: VAULT_PLUGIN_HASH=$(shell shasum -a 256 ./docker/bin/$(EXECUTABLE) | awk '{ print $$1 }')
 
