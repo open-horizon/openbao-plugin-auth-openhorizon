@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2](https://github.com/open-horizon/openbao-plugin-auth-openhorizon/pull/13) - 2026-01-08
+- Golang dependency updates.
+
 ## [1.0.1](https://github.com/open-horizon/openbao-plugin-auth-openhorizon/pull/10) - 2025-04-03
 - Added plugin multiplexing support.
 - Added Golang and dependencies.

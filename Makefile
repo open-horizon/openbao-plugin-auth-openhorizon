@@ -4,7 +4,7 @@ SHELL := /bin/bash
 arch_tag ?= $(shell ./tools/arch-tag)
 arch ?= $(arch_tag)
 
-BAO_VERSION ?= 2.2.0
+BAO_VERSION ?= 2.5.0
 BAO_GPGKEY ?= ""
 VAULT_PLUGIN_HASH := ""
 
